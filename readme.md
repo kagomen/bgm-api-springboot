@@ -4,7 +4,8 @@
 - [ER 図](./docs/er.md)
 - [DTO 定義書](./docs/dto.md)
 - [API 設計書](./docs/openapi.md)
-  - [Swagger UI ver](https://editor.swagger.io/?url=https://gist.githubusercontent.com/kagomen/6520ef0283e1e447535c69cbc6f1fae0/raw/eeab7a31b43f873fe295735b2d5ca43b031964bd/bgm-api-openapi.yaml)
+  - [Swagger Editor](https://editor.swagger.io/)に[openapi.yaml](./docs/openapi.yaml)のコードを入力すると、Swagger UI で閲覧可能
+- [シーケンス図](./docs/sequence.md)
 
 ## コマンドメモ
 

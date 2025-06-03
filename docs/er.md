@@ -4,7 +4,9 @@
 erDiagram
 
 User {
-String id PK "ユーザーID"
+Integer id PK "ユーザーID"
+String provider "Enum: google, github, apple"
+String provider_user_id UK "Firebase uid"
 String name "ユーザー名"
 LocalDateTime created_at "登録日時"
 }
@@ -13,13 +15,13 @@ Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
 String url UK "BGM URL"
-String created_by FK "ユーザーID"
+Integer created_by FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 Boolean is_deleted "削除フラグ"
 }
 
 Bookmark {
-String user_id PK,FK "ユーザーID"
+Integer user_id PK,FK "ユーザーID"
 Integer bgm_id PK,FK "BGM ID"
 LocalDateTime created_at "登録日時"
 }
@@ -27,7 +29,7 @@ LocalDateTime created_at "登録日時"
 Tag {
 Integer id PK "タグID"
 String title UK "タグ名"
-String created_by FK "ユーザーID"
+Integer created_by FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 }
 
@@ -41,7 +43,7 @@ Report {
 Integer id PK "レポートID"
 Integer bgm_id FK "BGM ID"
 String reason "通報理由"
-String reported_by FK "ユーザー名"
+Integer created_by FK "ユーザー名"
 LocalDateTime created_at "通報日時"
 }
 

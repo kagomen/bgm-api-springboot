@@ -402,8 +402,8 @@ components:
           type: integer
         bgmId:
           type: integer
-        reportedBy:
-          type: string
+        createdBy:
+          type: integer
         reason:
           type: string
         createdAt:

@@ -776,7 +776,7 @@ curl -X GET http://localhost:8080/report \
     {
       "id": 0,
       "bgmId": 0,
-      "reportedBy": "string",
+      "createdBy": 0,
       "reason": "string",
       "createdAt": "2019-08-24T14:15:22Z"
     }
@@ -803,7 +803,7 @@ Status Code **200**
 |» data|[[ReportResponse](#schemareportresponse)]|false|none|none|
 |»» id|integer|false|none|none|
 |»» bgmId|integer|false|none|none|
-|»» reportedBy|string|false|none|none|
+|»» createdBy|integer|false|none|none|
 |»» reason|string|false|none|none|
 |»» createdAt|string(date-time)|false|none|none|
 
@@ -1073,7 +1073,7 @@ firebase
 {
   "id": 0,
   "bgmId": 0,
-  "reportedBy": "string",
+  "createdBy": 0,
   "reason": "string",
   "createdAt": "2019-08-24T14:15:22Z"
 }
@@ -1086,7 +1086,7 @@ firebase
 |---|---|---|---|---|
 |id|integer|false|none|none|
 |bgmId|integer|false|none|none|
-|reportedBy|string|false|none|none|
+|createdBy|integer|false|none|none|
 |reason|string|false|none|none|
 |createdAt|string(date-time)|false|none|none|
 
