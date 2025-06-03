@@ -19,6 +19,8 @@ headingLevel: 2
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 - ★マークのついたエンドポイントは実装の優先度が低い
+- 🔓アイコンのついたエンドポイントはログインユーザーのみ使用可
+  - その他のロール権限があるエンドポイントは【】内にその旨を記述
 
 Base URLs:
 
@@ -680,7 +682,7 @@ curl -X POST http://localhost:8080/bgm/{id}/tag \
 
 ```json
 {
-  "tag": "happy"
+  "title": "happy"
 }
 ```
 
@@ -955,7 +957,7 @@ firebase
 
 ```json
 {
-  "tag": "happy"
+  "title": "happy"
 }
 
 ```
@@ -964,7 +966,7 @@ firebase
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|tag|string|true|none|none|
+|title|string|true|none|none|
 
 <h2 id="tocS_BookmarkRequest">BookmarkRequest</h2>
 <!-- backwards compatibility -->

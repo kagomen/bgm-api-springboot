@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: |
     - ★マークのついたエンドポイントは実装の優先度が低い
+    - 🔓アイコンのついたエンドポイントはログインユーザーのみ使用可
+      - その他のロール権限があるエンドポイントは【】内にその旨を記述
 
 servers:
   - url: http://localhost:8080
@@ -340,9 +342,9 @@ components:
     TagRequest:
       type: object
       required:
-        - tag
+        - title
       properties:
-        tag:
+        title:
           type: string
           example: "happy"
 
