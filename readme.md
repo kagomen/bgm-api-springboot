@@ -9,5 +9,5 @@
 - yaml 形式の OpenAPI 定義ファイルを md 形式に変換
 
 ```bash
-widdershins --search false --language_tabs 'ruby:Ruby' 'python:Python' --summary ./docs/openapi.yaml -o ./docs/openapi.md
+widdershins --search false --language_tabs 'shell:Shell' --summary ./docs/openapi.yaml -o ./docs/openapi.md
 ```

@@ -1,11 +1,9 @@
 ---
 title: BGM API v1.0.0
 language_tabs:
-  - ruby: Ruby
-  - python: Python
+  - shell: Shell
 language_clients:
-  - ruby: ""
-  - python: ""
+  - shell: ""
 toc_footers: []
 includes: []
 search: false
@@ -36,31 +34,10 @@ Base URLs:
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json'
-}
-
-result = RestClient.get 'http://localhost:8080/bgm',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json'
-}
-
-r = requests.get('http://localhost:8080/bgm', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X GET http://localhost:8080/bgm \
+  -H 'Accept: application/json'
 
 ```
 
@@ -129,35 +106,12 @@ This operation does not require authentication
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Content-Type' => 'application/json',
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.post 'http://localhost:8080/bgm',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.post('http://localhost:8080/bgm', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X POST http://localhost:8080/bgm \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -236,31 +190,10 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json'
-}
-
-result = RestClient.get 'http://localhost:8080/bgm/{id}',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json'
-}
-
-r = requests.get('http://localhost:8080/bgm/{id}', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X GET http://localhost:8080/bgm/{id} \
+  -H 'Accept: application/json'
 
 ```
 
@@ -335,33 +268,11 @@ This operation does not require authentication
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.delete 'http://localhost:8080/bgm/{id}',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.delete('http://localhost:8080/bgm/{id}', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X DELETE http://localhost:8080/bgm/{id} \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -435,33 +346,11 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.get 'http://localhost:8080/bookmark',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.get('http://localhost:8080/bookmark', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X GET http://localhost:8080/bookmark \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -555,35 +444,12 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Content-Type' => 'application/json',
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.post 'http://localhost:8080/bookmark',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.post('http://localhost:8080/bookmark', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X POST http://localhost:8080/bookmark \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -663,33 +529,11 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.delete 'http://localhost:8080/bookmark/{bgmId}',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.delete('http://localhost:8080/bookmark/{bgmId}', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X DELETE http://localhost:8080/bookmark/{bgmId} \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -763,31 +607,10 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json'
-}
-
-result = RestClient.get 'http://localhost:8080/tag',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json'
-}
-
-r = requests.get('http://localhost:8080/tag', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X GET http://localhost:8080/tag \
+  -H 'Accept: application/json'
 
 ```
 
@@ -842,35 +665,12 @@ This operation does not require authentication
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Content-Type' => 'application/json',
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.post 'http://localhost:8080/bgm/{id}/tag',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.post('http://localhost:8080/bgm/{id}/tag', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X POST http://localhost:8080/bgm/{id}/tag \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -953,33 +753,11 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.get 'http://localhost:8080/report',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.get('http://localhost:8080/report', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X GET http://localhost:8080/report \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
@@ -1057,35 +835,12 @@ firebase
 
 > Code samples
 
-```ruby
-require 'rest-client'
-require 'json'
-
-headers = {
-  'Content-Type' => 'application/json',
-  'Accept' => 'application/json',
-  'Authorization' => 'Bearer {access-token}'
-}
-
-result = RestClient.post 'http://localhost:8080/report',
-  params: {
-  }, headers: headers
-
-p JSON.parse(result)
-
-```
-
-```python
-import requests
-headers = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': 'Bearer {access-token}'
-}
-
-r = requests.post('http://localhost:8080/report', headers = headers)
-
-print(r.json())
+```shell
+# You can also use wget
+curl -X POST http://localhost:8080/report \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
 
 ```
 
