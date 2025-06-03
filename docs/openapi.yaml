@@ -1,0 +1,403 @@
+openapi: 3.0.0
+info:
+  title: BGM API
+  version: 1.0.0
+  description: |
+    - ★マークのついたエンドポイントは実装の優先度が低い
+    - 共通エラーレスポンス
+      - 400: 不正なリクエスト
+      - 401: 認証エラー（ログイン必須）
+      - 403: 権限不足
+      - 404: 該当リソースなし
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /bgm:
+    get:
+      summary: BGM一覧を取得・タグ検索
+      tags: [bgm]
+      parameters:
+        - name: tags
+          in: query
+          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["rain", "cafe"]
+          explode: false # tags=rain,cafe とするのに必要な設定
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/BgmResponse"
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: BGMを投稿
+      tags: [bgm]
+      description: |
+        投稿者データ(createdBy)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BgmRequest"
+      responses:
+        "201":
+          description: BGMを投稿しました
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bgm/{id}:
+    get:
+      summary: 指定したBGMの情報を取得
+      tags: [bgm]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: BGMのデータを取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/BgmResponse"
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: 指定したBGMを削除【投稿ユーザと管理者のみ】★
+      tags: [bgm]
+      security:
+        - firebase: []
+      x-roles:
+        - OWNER
+        - ADMIN
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: 投稿を削除しました
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookmark:
+    get:
+      summary: ブックマーク一覧を取得・タグ検索
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: tags
+          in: query
+          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["rain", "cafe"]
+          explode: false
+      responses:
+        "200":
+          description: ブックマーク一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/BgmResponse"
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: ブックマークに登録
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookmarkRequest"
+      responses:
+        "201":
+          description: ブックマークに追加しました
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookmark/{bgmId}:
+    delete:
+      summary: ブックマークの削除
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: ブックマークを削除しました
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tag:
+    get:
+      summary: 利用可能なタグ一覧を取得
+      tags: [tag]
+      responses:
+        "200":
+          description: タグ一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagResponse"
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /report:
+    get:
+      summary: 違反報告一覧を取得【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      responses:
+        "200":
+          description: 報告一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReportResponse"
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: 違反BGMを通報★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportRequest"
+      responses:
+        "201":
+          description: 違反報告を送信しました
+        "400":
+          description: エラーレスポンス
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    # ==================== リクエスト ====================
+
+    BgmRequest:
+      type: object
+      required:
+        - title
+        - url
+      properties:
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["rain", "cafe"]
+
+    BookmarkRequest:
+      type: object
+      required:
+        - bgmId
+      properties:
+        bgmId:
+          type: integer
+
+    ReportRequest:
+      type: object
+      required:
+        - bgmId
+        - reason
+      properties:
+        bgmId:
+          type: integer
+        reason:
+          type: string
+
+    # ==================== レスポンス ====================
+
+    BgmResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+
+    TagResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+
+    ReportResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        bgmId:
+          type: integer
+        reportedBy:
+          type: string
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: エラーメッセージ
+
+  responses:
+    ErrorResponse:
+      description: エラーレスポンス
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              isSuccess:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: エラーメッセージ
+
+  securitySchemes:
+    firebase:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
