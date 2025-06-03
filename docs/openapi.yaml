@@ -4,11 +4,6 @@ info:
   version: 1.0.0
   description: |
     - ★マークのついたエンドポイントは実装の優先度が低い
-    - 共通エラーレスポンス
-      - 400: 不正なリクエスト
-      - 401: 認証エラー（ログイン必須）
-      - 403: 権限不足
-      - 404: 該当リソースなし
 
 servers:
   - url: http://localhost:8080
@@ -44,11 +39,8 @@ paths:
                     items:
                       $ref: "#/components/schemas/BgmResponse"
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+
     post:
       summary: BGMを投稿
       tags: [bgm]
@@ -68,11 +60,11 @@ paths:
         "201":
           description: BGMを投稿しました
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
 
   /bgm/{id}:
     get:
@@ -97,11 +89,9 @@ paths:
                   data:
                     $ref: "#/components/schemas/BgmResponse"
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
     delete:
       summary: 指定したBGMを削除【投稿ユーザと管理者のみ】★
       tags: [bgm]
@@ -120,11 +110,13 @@ paths:
         "204":
           description: 投稿を削除しました
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /bookmark:
     get:
@@ -160,11 +152,13 @@ paths:
                     items:
                       $ref: "#/components/schemas/BgmResponse"
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
     post:
       summary: ブックマークに登録
       tags: [bookmark]
@@ -182,11 +176,13 @@ paths:
         "201":
           description: ブックマークに追加しました
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /bookmark/{bgmId}:
     delete:
@@ -206,11 +202,13 @@ paths:
         "204":
           description: ブックマークを削除しました
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /tag:
     get:
@@ -231,11 +229,39 @@ paths:
                     items:
                       $ref: "#/components/schemas/TagResponse"
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+
+  /bgm/{id}/tag:
+    post:
+      summary: 指定したBGMにタグを追加
+      tags: [tag]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagRequest"
+      responses:
+        "201":
+          description: タグを追加しました
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
   /report:
     get:
@@ -260,11 +286,11 @@ paths:
                     items:
                       $ref: "#/components/schemas/ReportResponse"
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
     post:
       summary: 違反BGMを通報★
       tags: [report]
@@ -282,15 +308,17 @@ paths:
         "201":
           description: 違反報告を送信しました
         "400":
-          description: エラーレスポンス
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
 
 components:
   schemas:
-    # ==================== リクエスト ====================
+    # ==================== リクエスト用スキーマ ====================
 
     BgmRequest:
       type: object
@@ -308,6 +336,15 @@ components:
           items:
             type: string
           example: ["rain", "cafe"]
+
+    TagRequest:
+      type: object
+      required:
+        - tag
+      properties:
+        tag:
+          type: string
+          example: "happy"
 
     BookmarkRequest:
       type: object
@@ -328,7 +365,7 @@ components:
         reason:
           type: string
 
-    # ==================== レスポンス ====================
+    # ==================== レスポンス用スキーマ ====================
 
     BgmResponse:
       type: object
@@ -352,7 +389,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         title:
           type: string
 
@@ -371,19 +408,11 @@ components:
           type: string
           format: date-time
 
-    ErrorResponse:
-      type: object
-      properties:
-        isSuccess:
-          type: boolean
-          example: false
-        message:
-          type: string
-          example: エラーメッセージ
-
   responses:
-    ErrorResponse:
-      description: エラーレスポンス
+    # ==================== エラーレスポンス用スキーマ ====================
+
+    BadRequestResponse:
+      description: 不正なリクエストです
       content:
         application/json:
           schema:
@@ -394,7 +423,49 @@ components:
                 example: false
               message:
                 type: string
-                example: エラーメッセージ
+                example: 不正なリクエストです
+
+    UnauthorizedResponse:
+      description: 認証が必要です
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              isSuccess:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 認証が必要です
+
+    ForbiddenResponse:
+      description: 権限がありません
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              isSuccess:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 権限がありません
+
+    NotFoundResponse:
+      description: 該当リソースが存在しません
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              isSuccess:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 該当リソースが存在しません
 
   securitySchemes:
     firebase:
