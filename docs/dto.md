@@ -4,28 +4,50 @@
 
 ### BgmRequest
 
-`POST /bgm`
+> POST /postBgm
 
-| フィールド名 | 型         | 必須 | バリデーション            | 説明           |
-| ------------ | ---------- | ---- | ------------------------- | -------------- |
-| title        | String     | ○    | @NotBlank, @Size(max=100) | BGM のタイトル |
-| url          | String     | ○    | @NotBlank, @URL           | BGM の URL     |
-| tags         | List\<Tag> |      | @Size(max=5)              | タグ名リスト   |
-| ┗ title      | String     | ○    | @NotBlank, @Size(max=10)  | タグ名         |
+| フィールド名 | 型            | 必須 | バリデーション            | 説明           |
+| ------------ | ------------- | ---- | ------------------------- | -------------- |
+| title        | String        | ○    | @NotBlank, @Size(max=100) | BGM のタイトル |
+| url          | String        | ○    | @NotBlank, @URL           | BGM の URL     |
+| tags         | List\<String> |      |                           | タグ名リスト   |
 
-### TagRequest
-
-`POST /bgm/{id}/tag`
+タグ名リストの中身：
 
 | フィールド名 | 型     | 必須 | バリデーション           | 説明   |
 | ------------ | ------ | ---- | ------------------------ | ------ |
 | title        | String | ○    | @NotBlank, @Size(max=10) | タグ名 |
 
+### TagAddRequest
+
+> POST /addTag/{bgmId}
+
+| フィールド名 | 型     | 必須 | バリデーション           | 説明   |
+| ------------ | ------ | ---- | ------------------------ | ------ |
+| title        | String | ○    | @NotBlank, @Size(max=10) | タグ名 |
+
+### TagRemoveRequest
+
+> DELETE /removeTag/{bgmId}
+
+| フィールド名 | 型      | 必須 | バリデーション      | 説明   |
+| ------------ | ------- | ---- | ------------------- | ------ |
+| tagId        | Integer | ○    | @NotNull, @Positive | タグ名 |
+
 ### ReportRequest
 
-`POST /report`
+> POST /postReport
 
-| フィールド名 | 型     | 必須 | バリデーション            | 説明               |
-| ------------ | ------ | ---- | ------------------------- | ------------------ |
-| bgmId        | int    | ○    | @Positive                 | 通報する BGM の ID |
-| reason       | String | ○    | @NotBlank, @Size(max=300) | 通報理由           |
+| フィールド名 | 型      | 必須 | バリデーション            | 説明               |
+| ------------ | ------- | ---- | ------------------------- | ------------------ |
+| bgmId        | Integer | ○    | @NotNull, @Positive       | 通報する BGM の ID |
+| reason       | String  | ○    | @NotBlank, @Size(max=300) | 通報理由           |
+
+## 補足
+
+| アノテーション  | チェック内容               | 対象型                         |
+| --------------- | -------------------------- | ------------------------------ |
+| @NotNull        | null 禁止                  | なんでも                       |
+| @NotBlank       | null・空文字・空白文字禁止 | String のみ                    |
+| @NotEmpty       | null と空配列・空文字禁止  | String, Collection, Map, Array |
+| @PositiveOrZero | 0 以上                     | Integer, Long, Double          |
