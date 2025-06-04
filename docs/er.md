@@ -1,12 +1,13 @@
 ## ER 図
 
+DB に保存するデータ構造(Entity)とその関係(Relation)を記述します。
+
 ```mermaid
 erDiagram
 
 User {
 Integer id PK "ユーザーID"
-String provider "Enum: google, github, apple"
-String provider_user_id UK "Firebase uid"
+String uid UK "Firebase uid"
 String name "ユーザー名"
 LocalDateTime created_at "登録日時"
 }
@@ -14,10 +15,10 @@ LocalDateTime created_at "登録日時"
 Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
-String url UK "BGM URL"
+String url "BGM URL"
 Integer created_by FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
-Boolean is_deleted "削除フラグ"
+LocalDateTime deleted_at "削除日時"
 }
 
 Bookmark {
@@ -43,16 +44,27 @@ Report {
 Integer id PK "レポートID"
 Integer bgm_id FK "BGM ID"
 String reason "通報理由"
-Integer created_by FK "ユーザー名"
+Integer created_by FK "ユーザーID"
 LocalDateTime created_at "通報日時"
 }
 
 User ||--o{ Bgm : created_by
 User ||--o{ Bookmark : user_id
 User ||--o{ Tag : created_by
-User ||--o{ Report : reported_by
+User ||--o{ Report : created_by
 Bgm ||--o{ Bookmark : bgm_id
 Bgm ||--o{ BgmTag : bgm_id
 Bgm ||--o{ Report : bgm_id
 Tag ||--o{ BgmTag : tag_id
 ```
+
+## 補足
+
+- BGM の削除について
+  - BGM データは物理削除せず論理削除する
+    - Report テーブルで BGM の id が紐づいている&記録として残しておくため
+  - `Bgm` テーブルの `url` と `deleted_at` に対して複合ユニーク制約を持たせる
+    - 一度論理削除した URL を別ユーザーが再投稿できるようにするため(`url` だけユニーク制約を持たせると、再投稿できなくなる)
+- タグの削除について
+  - 検索しやすいように、タグは他の曲とも共有させる
+  - よって、タグの削除は BGM との紐付けを解除するだけで、タグ自体は削除しない

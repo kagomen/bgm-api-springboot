@@ -1,6 +1,6 @@
 ## シーケンス図
 
-認証が必要な処理の流れの例として、「ユーザーがログインして BGM を投稿する」までのフローをシーケンス図で記述する。
+認証が必要な処理の流れの例として、「ユーザーがログインして BGM を投稿する」までのフローを記述します。
 
 ```mermaid
 sequenceDiagram
@@ -14,9 +14,9 @@ sequenceDiagram
 
   FE->>BE: POST /bgm<br />Authorization: Bearer {ID Token}
   BE->>Firebase: ID Token を検証
-  Firebase->>BE: 検証成功<br />uid, provider を返却
+  Firebase->>BE: 検証成功, uidを返却
 
-  BE->>DB: uid, providerでユーザーを検索
+  BE->>DB: uidでユーザーを検索
   DB->>BE: ユーザー情報 or null
 
   alt nullの場合

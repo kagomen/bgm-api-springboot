@@ -13,7 +13,7 @@ servers:
 paths:
   /bgm:
     get:
-      summary: BGM一覧を取得・タグ検索
+      summary: BGM一覧を取得 or タグ検索
       tags: [bgm]
       parameters:
         - name: tags
@@ -68,12 +68,12 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
 
-  /bgm/{id}:
+  /bgm/{bgmId}:
     get:
       summary: 指定したBGMの情報を取得
       tags: [bgm]
       parameters:
-        - name: id
+        - name: bgmId
           in: path
           required: true
           schema:
@@ -94,6 +94,7 @@ paths:
           $ref: "#/components/responses/BadRequestResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+
     delete:
       summary: 指定したBGMを削除【投稿ユーザと管理者のみ】★
       tags: [bgm]
@@ -103,7 +104,7 @@ paths:
         - OWNER
         - ADMIN
       parameters:
-        - name: id
+        - name: bgmId
           required: true
           in: path
           schema:
@@ -120,9 +121,68 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
+  /bgm/{bgmId}/tag:
+    post:
+      summary: 指定したBGMにタグを追加
+      tags: [bgm]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagRequest"
+      responses:
+        "201":
+          description: タグを追加しました
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /bgm/{bgmId}/tag/{tagId}:
+    delete:
+      summary: 指定したBGMから指定したタグを削除
+      tags: [bgm]
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: タグを削除しました
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
   /bookmark:
     get:
-      summary: ブックマーク一覧を取得・タグ検索
+      summary: ブックマーク一覧を取得 or タグ検索
       tags: [bookmark]
       security:
         - firebase: []
@@ -161,6 +221,8 @@ paths:
           $ref: "#/components/responses/ForbiddenResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+
+  /bookmark/{bgmId}:
     post:
       summary: ブックマークに登録
       tags: [bookmark]
@@ -168,12 +230,12 @@ paths:
         - firebase: []
       x-roles:
         - USER
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BookmarkRequest"
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "201":
           description: ブックマークに追加しました
@@ -186,7 +248,6 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /bookmark/{bgmId}:
     delete:
       summary: ブックマークの削除
       tags: [bookmark]
@@ -232,38 +293,6 @@ paths:
                       $ref: "#/components/schemas/TagResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
-
-  /bgm/{id}/tag:
-    post:
-      summary: 指定したBGMにタグを追加
-      tags: [tag]
-      security:
-        - firebase: []
-      x-roles:
-        - USER
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TagRequest"
-      responses:
-        "201":
-          description: タグを追加しました
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
 
   /report:
     get:
@@ -320,7 +349,7 @@ paths:
 
 components:
   schemas:
-    # ==================== リクエスト用スキーマ ====================
+    # ==================== リクエストボディ用のデータスキーマ ====================
 
     BgmRequest:
       type: object
@@ -348,14 +377,6 @@ components:
           type: string
           example: "happy"
 
-    BookmarkRequest:
-      type: object
-      required:
-        - bgmId
-      properties:
-        bgmId:
-          type: integer
-
     ReportRequest:
       type: object
       required:
@@ -367,7 +388,7 @@ components:
         reason:
           type: string
 
-    # ==================== レスポンス用スキーマ ====================
+    # ==================== レスポンスボディ用のデータスキーマ ====================
 
     BgmResponse:
       type: object
@@ -411,7 +432,7 @@ components:
           format: date-time
 
   responses:
-    # ==================== エラーレスポンス用スキーマ ====================
+    # ==================== エラーレスポンス ====================
 
     BadRequestResponse:
       description: 不正なリクエストです
@@ -468,6 +489,8 @@ components:
               message:
                 type: string
                 example: 該当リソースが存在しません
+
+    # ==================== 認証設定 ====================
 
   securitySchemes:
     firebase:
