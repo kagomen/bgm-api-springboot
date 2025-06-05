@@ -26,14 +26,6 @@
 | ------------ | ------ | ---- | ------------------------ | ------ |
 | title        | String | ○    | @NotBlank, @Size(max=10) | タグ名 |
 
-### TagRemoveRequest
-
-> DELETE /removeTag/{bgmId}
-
-| フィールド名 | 型      | 必須 | バリデーション      | 説明   |
-| ------------ | ------- | ---- | ------------------- | ------ |
-| tagId        | Integer | ○    | @NotNull, @Positive | タグ名 |
-
 ### ReportRequest
 
 > POST /postReport

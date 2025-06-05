@@ -177,9 +177,10 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /remove_tag/{bgmId}:
+  /remove_tag/{bgmId}/{tagId}:
     delete:
       summary: 指定したBGMから指定したタグを物理削除
+      description: タグは複数個同時に削除できない
       tags: [tag]
       security:
         - firebase: []
@@ -191,12 +192,11 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TagRemoveRequest"
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "204":
           description: タグを削除しました
@@ -390,15 +390,6 @@ components:
         title:
           type: string
           example: "happy"
-
-    TagRemoveRequest:
-      type: object
-      required:
-        - tagId
-      properties:
-        tagId:
-          type: integer
-          example: 123
 
     ReportRequest:
       type: object
