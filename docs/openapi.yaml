@@ -11,6 +11,26 @@ servers:
   - url: http://localhost:8080
 
 paths:
+  /update_user:
+    patch:
+      summary: ユーザー情報の変更
+      tags: [user]
+      description: |
+        投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+      responses:
+        "200":
+          description: ユーザー名を変更しました
+
   /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
@@ -362,6 +382,14 @@ paths:
 components:
   schemas:
     # ==================== リクエストボディ用のデータスキーマ ====================
+    UserRequest:
+      type: object
+      required:
+        - name:
+      properties:
+        name:
+          type: string
+          example: Kagome
 
     BgmRequest:
       type: object
