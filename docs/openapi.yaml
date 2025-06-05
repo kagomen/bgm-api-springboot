@@ -11,7 +11,7 @@ servers:
   - url: http://localhost:8080
 
 paths:
-  /getBgmList:
+  /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
       tags: [bgm]
@@ -44,7 +44,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /getBgm/{bgmId}:
+  /get_bgm/{bgmId}:
     get:
       summary: 指定したBGMの情報を取得
       tags: [bgm]
@@ -71,7 +71,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /postBgm:
+  /post_bgm:
     post:
       summary: BGMを投稿
       tags: [bgm]
@@ -97,7 +97,7 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
 
-  /deleteBgm/{bgmId}:
+  /delete_bgm/{bgmId}:
     patch:
       summary: 指定したBGMを論理削除【投稿ユーザと管理者のみ】★
       tags: [bgm]
@@ -124,7 +124,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getTagList:
+  /get_tag_list:
     get:
       summary: 利用可能なタグ一覧を取得
       tags: [tag]
@@ -145,7 +145,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /addTag/{bgmId}:
+  /add_tag/{bgmId}:
     post:
       summary: 指定したBGMにタグを追加
       tags: [tag]
@@ -177,7 +177,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /removeTag/{bgmId}:
+  /remove_tag/{bgmId}:
     delete:
       summary: 指定したBGMから指定したタグを物理削除
       tags: [tag]
@@ -209,7 +209,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getBookmarkList:
+  /get_bookmark_list:
     get:
       summary: ブックマーク一覧を取得(タグ検索)
       tags: [bookmark]
@@ -252,7 +252,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /addBookmark/{bgmId}:
+  /add_bookmark/{bgmId}:
     post:
       summary: ブックマークに登録
       tags: [bookmark]
@@ -278,7 +278,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /deleteBookmark/{bgmId}:
+  /delete_bookmark/{bgmId}:
     delete:
       summary: ブックマークの物理削除
       tags: [bookmark]
@@ -304,7 +304,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getReportList:
+  /get_report_list:
     get:
       summary: 違反報告一覧を取得【管理者のみ】★
       tags: [report]
@@ -333,7 +333,7 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
 
-  /postReport:
+  /post_report:
     post:
       summary: 違反BGMを通報★
       tags: [report]
