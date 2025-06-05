@@ -17,7 +17,7 @@ String title "BGMタイトル"
 String url "BGM URL"
 String user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
-LocalDateTime deleted_at "削除日時"
+LocalDateTime is_deleted "削除フラグ"
 }
 
 Bookmark {
