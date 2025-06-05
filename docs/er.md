@@ -6,8 +6,7 @@ DB に保存するデータ構造(Entity)とその関係(Relation)を記述し�
 erDiagram
 
 User {
-Integer id PK "ユーザーID"
-String uid UK "Firebase uid"
+String id PK "Firebase uid"
 String name "ユーザー名"
 LocalDateTime created_at "登録日時"
 }
@@ -16,7 +15,7 @@ Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
 String url "BGM URL"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 LocalDateTime deleted_at "削除日時"
 }
@@ -30,7 +29,7 @@ LocalDateTime created_at "登録日時"
 Tag {
 Integer id PK "タグID"
 String title UK "タグ名"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 }
 
@@ -44,14 +43,14 @@ Report {
 Integer id PK "レポートID"
 Integer bgm_id FK "BGM ID"
 String reason "通報理由"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "通報日時"
 }
 
-User ||--o{ Bgm : created_by
+User ||--o{ Bgm : user_id
 User ||--o{ Bookmark : user_id
-User ||--o{ Tag : created_by
-User ||--o{ Report : created_by
+User ||--o{ Tag : user_id
+User ||--o{ Report : user_id
 Bgm ||--o{ Bookmark : bgm_id
 Bgm ||--o{ BgmTag : bgm_id
 Bgm ||--o{ Report : bgm_id
