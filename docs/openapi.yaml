@@ -76,7 +76,7 @@ paths:
       summary: BGMを投稿
       tags: [bgm]
       description: |
-        投稿者データ(createdBy)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+        投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
       security:
         - firebase: []
       x-roles:
@@ -423,8 +423,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagResponse"
-        createdBy:
-          type: integer
+        userId:
+          type: string
           example: 8
         createdAt:
           type: string
@@ -452,8 +452,8 @@ components:
         bgmId:
           type: integer
           example: 123
-        createdBy:
-          type: integer
+        userId:
+          type: string
           example: 8
         reason:
           type: string
