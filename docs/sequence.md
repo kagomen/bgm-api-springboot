@@ -23,11 +23,10 @@ sequenceDiagram
     DB->>BE: 存在しない
     BE->>DB: Userの作成依頼
     DB->>BE: 作成完了
-    BE->>FE: 201 Created
   else Userが存在する
     DB->>BE: 存在する
-    BE->>FE: 200 OK
   end
+    BE->>FE: 200 OK {id}
 ```
 
 ### BGM を投稿

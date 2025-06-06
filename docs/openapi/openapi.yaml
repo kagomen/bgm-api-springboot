@@ -18,6 +18,35 @@ components:
       bearerFormat: JWT
 
 paths:
+  /register_user:
+    post:
+      summary: ユーザー登録と内部IDの発行(初回ログイン時のみ)
+      tags: [auth]
+      description: |
+        - ユーザーがFirebaseでログインした後、初回だけ呼び出される
+        - ID Tokenを検証し、該当するユーザーが存在しなければUserテーブルを作成しIDを返却、存在すればIDだけ返却
+          - 別端末の同Googleアカウントからのログインなどの可能性
+        - 投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      responses:
+        "200":
+          description: ユーザーを確認しました
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas/UserResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
   /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
