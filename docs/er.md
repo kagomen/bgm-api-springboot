@@ -8,7 +8,8 @@ erDiagram
 User {
 Integer id PK "ユーザーID"
 String uid UK "Firebase uid"
-String name "ユーザー名"
+String email "Firebase Authから取得したEmail"
+Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
 }
 
@@ -16,9 +17,9 @@ Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
 String url "BGM URL"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
-LocalDateTime deleted_at "削除日時"
+LocalDateTime is_deleted "削除フラグ"
 }
 
 Bookmark {
@@ -30,7 +31,7 @@ LocalDateTime created_at "登録日時"
 Tag {
 Integer id PK "タグID"
 String title UK "タグ名"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 }
 
@@ -42,16 +43,19 @@ LocalDateTime created_at "登録日時"
 
 Report {
 Integer id PK "レポートID"
-Integer bgm_id FK "BGM ID"
+Integer reporter_user_id FK "通報したユーザーのID"
 String reason "通報理由"
-Integer created_by FK "ユーザーID"
+Integer bgm_id FK "通報されたBGMのID"
+Integer bgm_author_user_id FK "通報されたBGM作成者のID"
 LocalDateTime created_at "通報日時"
+String handling_note "管理者の対応内容"
+LocalDateTime handled_at "管理者の対応日時"
 }
 
-User ||--o{ Bgm : created_by
+User ||--o{ Bgm : user_id
 User ||--o{ Bookmark : user_id
-User ||--o{ Tag : created_by
-User ||--o{ Report : created_by
+User ||--o{ Tag : user_id
+User ||--o{ Report : "reporter_user_id<br />bgm_author_user_id"
 Bgm ||--o{ Bookmark : bgm_id
 Bgm ||--o{ BgmTag : bgm_id
 Bgm ||--o{ Report : bgm_id

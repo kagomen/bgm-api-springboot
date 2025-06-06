@@ -1,0 +1,12 @@
+description: 権限がありません
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        isSuccess:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 権限がありません

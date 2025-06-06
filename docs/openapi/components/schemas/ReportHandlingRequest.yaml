@@ -1,0 +1,7 @@
+type: object
+required:
+  - handlingNote
+properties:
+  handlingNote:
+    type: string
+    example: 投稿が悪質なため、BGMを削除した

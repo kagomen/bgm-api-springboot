@@ -1,0 +1,489 @@
+openapi: 3.0.0
+info:
+  title: BGM API
+  version: 1.0.0
+  description: |
+    - ★のついたエンドポイントは実装の優先度低
+    - 🔓のついたエンドポイントはログインユーザーのみ使用可
+      - その他のロール権限があるエンドポイントは【】内にその旨を記述
+
+servers:
+  - url: http://localhost:8080
+
+components:
+  securitySchemes:
+    firebase:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /register_user:
+    post:
+      summary: ユーザー登録と内部IDの発行(初回ログイン時のみ)
+      tags: [auth]
+      description: |
+        - ユーザーがFirebaseでログインした後、初回だけ呼び出される
+        - ID Tokenを検証し、該当するユーザーが存在しなければUserテーブルを作成しIDを返却、存在すればIDだけ返却
+          - 別端末の同Googleアカウントからのログインなどの可能性
+        - 投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      responses:
+        "200":
+          description: ユーザーを確認しました
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas/UserResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /get_bgm_list:
+    get:
+      summary: BGM一覧を取得(タグ検索)
+      tags: [bgm]
+      parameters:
+        - name: tags
+          in: query
+          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["rain", "cafe"]
+          style: form
+          explode: false # tags=rain,cafe とするのに必要な設定
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/BgmResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+
+  /get_bgm_list/{userId}:
+    get:
+      summary: 指定したユーザーが投稿したBGM一覧を取得
+      tags: [bgm]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/BgmResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /get_bgm/{bgmId}:
+    get:
+      summary: 指定したBGMの情報を取得
+      tags: [bgm]
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: BGMのデータを取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    $ref: "./components/schemas/BgmResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /post_bgm:
+    post:
+      summary: BGMを投稿
+      tags: [bgm]
+      description: |
+        投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/BgmRequest.yaml"
+      responses:
+        "201":
+          description: BGMを投稿しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+
+  /delete_bgm/{bgmId}:
+    patch:
+      summary: 指定したBGMを論理削除【投稿ユーザと管理者のみ】★
+      tags: [bgm]
+      security:
+        - firebase: []
+      x-roles:
+        - OWNER
+        - ADMIN
+      parameters:
+        - name: bgmId
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: 投稿を削除しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /get_tag_list:
+    get:
+      summary: 利用可能なタグ一覧を取得
+      tags: [tag]
+      responses:
+        "200":
+          description: タグ一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/TagResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+
+  /add_tag/{bgmId}:
+    post:
+      summary: 指定したBGMにタグを追加
+      tags: [tag]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/TagAddRequest.yaml"
+      responses:
+        "201":
+          description: タグを追加しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /remove_tag/{bgmId}/{tagId}:
+    delete:
+      summary: 指定したBGMから指定したタグを物理削除
+      description: タグは複数個同時に削除できない
+      tags: [tag]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: タグを削除しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /get_bookmark_list:
+    get:
+      summary: ブックマーク一覧を取得(タグ検索)
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: tags
+          in: query
+          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example: ["rain", "cafe"]
+          style: form
+          explode: false
+      responses:
+        "200":
+          description: ブックマーク一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/BgmResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /add_bookmark/{bgmId}:
+    post:
+      summary: ブックマークに登録
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: ブックマークに追加しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /delete_bookmark/{bgmId}:
+    delete:
+      summary: ブックマークの物理削除
+      tags: [bookmark]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      parameters:
+        - name: bgmId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: ブックマークを削除しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /post_report:
+    post:
+      summary: 違反BGMを通報★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/ReportRequest.yaml"
+      responses:
+        "201":
+          description: 違反報告を送信しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /get_report_list:
+    get:
+      summary: 違反報告一覧を取得【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      responses:
+        "200":
+          description: 報告一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/ReportResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+
+  /ban_user/{userId}:
+    patch:
+      summary: ユーザーの論理削除【管理者のみ】★
+      tags: [report]
+      description: |
+        アカウントBAN用
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ユーザーをBANしました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /update_report/{reportId}:
+    patch:
+      summary: 違反報告への対応内容を記録する【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/ReportHandlingRequest.yaml"
+      responses:
+        "201":
+          description: 対応内容を記録しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
