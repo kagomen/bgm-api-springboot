@@ -31,6 +31,20 @@ paths:
         "200":
           description: ユーザー名を変更しました
 
+  /ban_user/{userId}:
+    patch:
+      summary: ユーザーのBAN（論理削除）【管理者のみ】★
+      tags: [user]
+      description: |
+        アカウントBAN用
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      responses:
+        "200":
+          description: ユーザーをBANしました
+
   /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
