@@ -18,20 +18,6 @@ components:
       bearerFormat: JWT
 
 paths:
-  /ban_user/{userId}:
-    patch:
-      summary: ユーザーのBAN（論理削除）【管理者のみ】★
-      tags: [user]
-      description: |
-        アカウントBAN用
-      security:
-        - firebase: []
-      x-roles:
-        - ADMIN
-      responses:
-        "200":
-          description: ユーザーをBANしました
-
   /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
@@ -64,6 +50,39 @@ paths:
                       $ref: "./components/schemas/BgmResponse.yaml"
         "400":
           $ref: "./components/responses/BadRequestResponse.yaml"
+
+  /get_bgm_list/{userId}:
+    get:
+      summary: 指定したユーザーが投稿したBGM一覧を取得
+      tags: [bgm]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: "./components/schemas/BgmResponse.yaml"
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /get_bgm/{bgmId}:
     get:
@@ -371,6 +390,66 @@ paths:
       responses:
         "201":
           description: 違反報告を送信しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /update_report/{reportId}:
+    patch:
+      summary: 違反報告への対応内容を記録する【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/ReportHandlingRequest.yaml"
+      responses:
+        "201":
+          description: 対応内容を記録しました
+        "400":
+          $ref: "./components/responses/BadRequestResponse.yaml"
+        "401":
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
+        "403":
+          $ref: "./components/responses/ForbiddenResponse.yaml"
+        "404":
+          $ref: "./components/responses/NotFoundResponse.yaml"
+
+  /ban_user/{userId}:
+    patch:
+      summary: ユーザーの論理削除【管理者のみ】★
+      tags: [user]
+      description: |
+        アカウントBAN用
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ユーザーをBANしました
         "400":
           $ref: "./components/responses/BadRequestResponse.yaml"
         "401":

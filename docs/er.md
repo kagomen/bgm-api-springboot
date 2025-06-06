@@ -6,7 +6,8 @@ DB に保存するデータ構造(Entity)とその関係(Relation)を記述し�
 erDiagram
 
 User {
-String id PK "Firebase uid"
+Integer id PK "ユーザーID"
+String uid UK "Firebase uid"
 String email "Firebase Authから取得したEmail"
 Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
@@ -16,13 +17,13 @@ Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
 String url "BGM URL"
-String user_id FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 LocalDateTime is_deleted "削除フラグ"
 }
 
 Bookmark {
-String user_id PK,FK "ユーザーID"
+Integer user_id PK,FK "ユーザーID"
 Integer bgm_id PK,FK "BGM ID"
 LocalDateTime created_at "登録日時"
 }
@@ -30,7 +31,7 @@ LocalDateTime created_at "登録日時"
 Tag {
 Integer id PK "タグID"
 String title UK "タグ名"
-String user_id FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 }
 
@@ -42,13 +43,13 @@ LocalDateTime created_at "登録日時"
 
 Report {
 Integer id PK "レポートID"
-String reporter_user_id FK "通報したユーザーのID"
+Integer reporter_user_id FK "通報したユーザーのID"
 String reason "通報理由"
 Integer bgm_id FK "通報されたBGMのID"
-String bgm_author_user_id FK "通報されたBGM作成者のID"
+Integer bgm_author_user_id FK "通報されたBGM作成者のID"
 LocalDateTime created_at "通報日時"
-LocalDateTime resolved_at "管理者の対応日時"
-String admin_memo "対応時の管理者メモ"
+String handling_note "管理者の対応内容"
+LocalDateTime handled_at "管理者の対応日時"
 }
 
 User ||--o{ Bgm : user_id
