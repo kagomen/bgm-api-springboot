@@ -15,7 +15,7 @@ properties:
     items:
       $ref: "./TagResponse.yaml"
   userId:
-    type: string
+    type: integer
     example: 8
   createdAt:
     type: string
