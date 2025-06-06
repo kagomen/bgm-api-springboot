@@ -10,6 +10,13 @@ info:
 servers:
   - url: http://localhost:8080
 
+components:
+  securitySchemes:
+    firebase:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
 paths:
   /ban_user/{userId}:
     patch:
@@ -54,9 +61,9 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/BgmResponse"
+                      $ref: "./components/schemas/BgmResponse.yaml"
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
 
   /get_bgm/{bgmId}:
     get:
@@ -79,11 +86,11 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    $ref: "#/components/schemas/BgmResponse"
+                    $ref: "./components/schemas/BgmResponse.yaml"
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /post_bgm:
     post:
@@ -100,16 +107,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BgmRequest"
+              $ref: "./components/schemas/BgmRequest.yaml"
       responses:
         "201":
           description: BGMを投稿しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
 
   /delete_bgm/{bgmId}:
     patch:
@@ -130,13 +137,13 @@ paths:
         "204":
           description: 投稿を削除しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /get_tag_list:
     get:
@@ -155,9 +162,9 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TagResponse"
+                      $ref: "./components/schemas/TagResponse.yaml"
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
 
   /add_tag/{bgmId}:
     post:
@@ -178,18 +185,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TagAddRequest"
+              $ref: "./components/schemas/TagAddRequest.yaml"
       responses:
         "201":
           description: タグを追加しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /remove_tag/{bgmId}/{tagId}:
     delete:
@@ -215,13 +222,13 @@ paths:
         "204":
           description: タグを削除しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /get_bookmark_list:
     get:
@@ -256,15 +263,15 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/BgmResponse"
+                      $ref: "./components/schemas/BgmResponse.yaml"
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /add_bookmark/{bgmId}:
     post:
@@ -284,13 +291,13 @@ paths:
         "201":
           description: ブックマークに追加しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /delete_bookmark/{bgmId}:
     delete:
@@ -310,13 +317,13 @@ paths:
         "204":
           description: ブックマークを削除しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
+          $ref: "./components/responses/NotFoundResponse.yaml"
 
   /get_report_list:
     get:
@@ -339,13 +346,13 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/ReportResponse"
+                      $ref: "./components/schemas/ReportResponse.yaml"
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
 
   /post_report:
     post:
@@ -360,184 +367,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ReportRequest"
+              $ref: "./components/schemas/ReportRequest.yaml"
       responses:
         "201":
           description: 違反報告を送信しました
         "400":
-          $ref: "#/components/responses/BadRequestResponse"
+          $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
+          $ref: "./components/responses/UnauthorizedResponse.yaml"
         "403":
-          $ref: "#/components/responses/ForbiddenResponse"
+          $ref: "./components/responses/ForbiddenResponse.yaml"
         "404":
-          $ref: "#/components/responses/NotFoundResponse"
-
-components:
-  schemas:
-    # ==================== リクエストボディ用のデータスキーマ ====================
-    BgmRequest:
-      type: object
-      required:
-        - title
-        - url
-      properties:
-        title:
-          type: string
-          example: 雨の日のカフェのBGM
-        url:
-          type: string
-          format: uri
-          example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
-          type: array
-          items:
-            type: string
-          example: ["rain", "cafe"]
-
-    TagAddRequest:
-      type: object
-      required:
-        - title
-      properties:
-        title:
-          type: string
-          example: "happy"
-
-    ReportRequest:
-      type: object
-      required:
-        - bgmId
-        - reason
-      properties:
-        bgmId:
-          type: integer
-          example: 123
-        reason:
-          type: string
-          example: イタズラ投稿だと判断したため
-
-    # ==================== レスポンスボディ用のデータスキーマ ====================
-
-    BgmResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 123
-        title:
-          type: string
-          example: 雨の日のカフェのBGM
-        url:
-          type: string
-          format: uri
-          example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
-          type: array
-          items:
-            $ref: "#/components/schemas/TagResponse"
-        userId:
-          type: string
-          example: 8
-        createdAt:
-          type: string
-          format: date-time
-
-    TagResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-      example:
-        - id: 1
-          title: "rain"
-        - id: 2
-          title: "cafe"
-
-    ReportResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 4
-        bgmId:
-          type: integer
-          example: 123
-        userId:
-          type: string
-          example: 8
-        reason:
-          type: string
-          example: イタズラ投稿だと判断したため
-        createdAt:
-          type: string
-          format: date-time
-
-  responses:
-    # ==================== エラーレスポンス ====================
-
-    BadRequestResponse:
-      description: 不正なリクエストです
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              isSuccess:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: 不正なリクエストです
-
-    UnauthorizedResponse:
-      description: 認証が必要です
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              isSuccess:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: 認証が必要です
-
-    ForbiddenResponse:
-      description: 権限がありません
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              isSuccess:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: 権限がありません
-
-    NotFoundResponse:
-      description: 該当リソースが存在しません
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              isSuccess:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: 該当リソースが存在しません
-
-    # ==================== 認証設定 ====================
-
-  securitySchemes:
-    firebase:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+          $ref: "./components/responses/NotFoundResponse.yaml"
