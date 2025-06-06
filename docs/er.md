@@ -7,7 +7,6 @@ erDiagram
 
 User {
 String id PK "Firebase uid"
-String name "ユーザー名"
 Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
 }

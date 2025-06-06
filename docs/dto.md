@@ -2,14 +2,6 @@
 
 各 API エンドポイントのリクエストボディの構造とバリデーションを記述します。レスポンスは Swagger UI を参照してください。
 
-### UserRequest
-
-> PATCH /update_user
-
-| フィールド名 | 型     | 必須 | バリデーション           | 説明       |
-| ------------ | ------ | ---- | ------------------------ | ---------- |
-| name         | String | ○    | @NotBlank, @Size(max=20) | ユーザー名 |
-
 ### BgmRequest
 
 > POST /post_bgm
