@@ -8,6 +8,7 @@ erDiagram
 User {
 String id PK "Firebase uid"
 String name "ユーザー名"
+Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
 }
 
@@ -41,16 +42,19 @@ LocalDateTime created_at "登録日時"
 
 Report {
 Integer id PK "レポートID"
-Integer bgm_id FK "BGM ID"
+String reporter_user_id FK "通報したユーザーのID"
 String reason "通報理由"
-String user_id FK "ユーザーID"
+Integer bgm_id FK "通報されたBGMのID"
+String bgm_author_user_id FK "通報されたBGM作成者のID"
 LocalDateTime created_at "通報日時"
+LocalDateTime resolved_at "管理者の対応日時"
+String admin_memo "対応時の管理者メモ"
 }
 
 User ||--o{ Bgm : user_id
 User ||--o{ Bookmark : user_id
 User ||--o{ Tag : user_id
-User ||--o{ Report : user_id
+User ||--o{ Report : "reporter_user_id<br />bgm_author_user_id"
 Bgm ||--o{ Bookmark : bgm_id
 Bgm ||--o{ BgmTag : bgm_id
 Bgm ||--o{ Report : bgm_id
