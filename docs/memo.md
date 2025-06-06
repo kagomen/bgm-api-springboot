@@ -3,7 +3,7 @@
 - yaml 形式の OpenAPI 定義ファイルを md 形式に変換
 
 ```bash
-widdershins --search false --language_tabs 'shell:Shell' --summary ./docs/openapi.yaml -o ./docs/openapi.md
+widdershins --search false --language_tabs 'shell:Shell' --summary ./docs/openapi/openapi.yaml -o ./docs/openapi/openapi.md
 ```
 
 ### トークンの期限が切れた時の Firebase の内部フロー
