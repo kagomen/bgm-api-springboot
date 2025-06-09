@@ -63,21 +63,22 @@
   - [x] シーケンス図
 - 開発環境構築: 6/6 締切
   - SpringBoot のセットアップ
-    - [ ] Gradle で SpringBoot プロジェクトを作成
-    - [ ] 依存追加
+    - [x] Gradle で SpringBoot プロジェクトを作成
+    - [x] 依存追加
   - Firebase のセットアップ
-    - [ ] Firebase Console でプロジェクト作成
-    - [ ] 認証方法を有効化
-    - [ ] サービスアカウントの秘密鍵(JSON)を作成し、resources/firebase/ 配下に保存
+    - [x] Firebase Console でプロジェクト作成
+    - [x] 認証方法を有効化
+    - [x] サービスアカウントの秘密鍵(JSON)を作成し、resources/firebase/ 配下に保存
   - Firebase Admin SDK の組み込み
-    - [ ] Firebase 初期化処理を構成クラスで作成(FirebaseConfig)
-    - [ ] ID トークンを検証するための Filter を作成(FirebaseAuthFilter)
-    - [ ] 検証成功時に SecurityContext へ認証情報を設定
+    - [x] Firebase 初期化処理を構成クラスで作成(FirebaseConfig)
+    - [x] ID トークンを検証するための Filter を作成(FirebaseAuthFilter)
+    - [x] 検証成功時に SecurityContext へ認証情報を設定
   - 認証付き API のテスト環境のセットアップ
-    - [ ] Firebase Console でテストユーザーを作成
-    - [ ] Postman で ID トークンを取得する
-    - [ ] Postman で Authorization: Bearer {ID Token} を付けて API を叩く
+    - [x] Firebase Console でテストユーザーを作成
+    - [x] Postman で ID トークンを取得する
+    - [x] Postman で Authorization: Bearer {ID Token} を付けて API を叩く
     - [ ] Swagger UI で同様に JWT を入れて試せるように設定する
+  - [ ] フォーマッター入れる
   - [ ] Docker 上に環境構築
 - 実装: 6/11 締切
 - テスト: 6/13 締切
