@@ -78,7 +78,7 @@
     - [x] Postman で ID トークンを取得する
     - [x] Postman で Authorization: Bearer {ID Token} を付けて API を叩く
     - [x] Swagger UI で同様に JWT を入れて試せるように設定する
-  - [ ] フォーマッター入れる
+  - [x] フォーマッター入れる
   - [ ] Docker 上に環境構築
 - 実装: 6/11 締切
 - テスト: 6/13 締切
