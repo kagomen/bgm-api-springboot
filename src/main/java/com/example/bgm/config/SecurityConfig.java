@@ -16,7 +16,11 @@ public class SecurityConfig {
     return http
       .csrf(csrf -> csrf.disable())
       .authorizeHttpRequests(auth -> auth
-          .requestMatchers("/public/**").permitAll()
+          .requestMatchers(
+            "/public/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
+          ).permitAll()
           .anyRequest().authenticated()
       )
       .addFilterBefore(new FirebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class)
