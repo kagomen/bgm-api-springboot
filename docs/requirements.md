@@ -81,4 +81,40 @@
   - [x] フォーマッター入れる
   - [ ] Docker 上に環境構築
 - 実装: 6/11 締切
+  - 共通基盤
+    - [x] Firebase IDトークン検証機構の実装（Filterなど）
+    - [x] UserエンティティとRepository、Serviceの作成
+    - [ ] User認証処理（/register_user の登録ロジック）
+    - [ ] 認証済みユーザーの取得ヘルパー（SecurityContextなど）
+  - BGM
+    - [ ] Entity定義（`Bgm`）
+    - [ ] DTO・Mapper・Repository
+    - [ ] `/post_bgm`, `/get_bgm_list`, `/get_bgm/{id}` の実装
+  - タグ
+    - [ ] Entity定義（`Tag`, `BgmTag`）
+    - [ ] タグ追加・削除（`/add_tag/{bgmId}`, `/remove_tag/{bgmId}/{tagId}`）
+    - [ ] タグ一覧取得 `/get_tag_list`
+    - [ ] タグ付き検索クエリ対応（Bgm, Bookmark両方）
+  - ブックマーク
+    - [ ] Entity定義（`Bookmark`）
+    - [ ] `/add_bookmark/{bgmId}`, `/delete_bookmark/{bgmId}`, `/get_bookmark_list` の実装
+  - 違反報告（最低限）
+    - [ ] Entity定義（`Report`）
+    - [ ] `/post_report` 実装
+    - [ ] `/get_report_list`, `/ban_user/{userId}`, `/update_report/{reportId}` は時間があれば
+  - 論理削除機能（優先度低）
+    - [ ] `/delete_bgm/{bgmId}` のみ実装（削除時に`is_deleted`へ日時を保存）
+  - エラーハンドリング＆共通レスポンス
+    - [ ] `400, 401, 403, 404` の共通エラーレスポンスを整備
+
+  > - 最初はDBの中身を`@Sql`で初期投入して、確認しながらやるのが現実的
+  > - Docker化は完全に後回しで問題なし（時間足りない）
+  > - Swagger / OpenAPI定義との整合性は、最低限「パラメータとレスポンス型が揃ってること」だけは確認
+
 - テスト: 6/13 締切
+  - [ ] 単体テスト（Service層）
+  - [ ] `/register_user`, `/post_bgm`, `/get_bgm_list` の正常系・異常系を重点的に
+  - [ ] Controller + MockMvc 統合テスト
+  - [ ] Firebase認証あり／なしパターン
+  - [ ] タグ・ブックマーク関連の正常系＋権限違反チェック
+  - [ ] レポート機能が間に合えば追加
