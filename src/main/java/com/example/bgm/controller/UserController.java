@@ -1,5 +1,6 @@
 package com.example.bgm.controller;
 
+import com.example.bgm.common.ApiResponseWrapper;
 import com.example.bgm.dto.response.UserRegisterResponse;
 import com.example.bgm.service.UserService;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,12 +21,13 @@ public class UserController {
   @Operation(summary = "ユーザーを登録", description = "uidからユーザーの存在チェックを行い、存在しなければユーザーを新規作成する")
   @ApiResponse(responseCode = "200", description = "内部ユーザーIDを返却")
   @PostMapping("/register_user")
-  public ResponseEntity<UserRegisterResponse> registerUser(HttpServletRequest req) {
+  public ResponseEntity<ApiResponseWrapper<UserRegisterResponse>> registerUser(
+      HttpServletRequest req) {
     try {
       var header = req.getHeader("Authorization");
 
       if (header == null || !header.startsWith("Bearer ")) {
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(401).body(ApiResponseWrapper.error("認証情報が不足しています"));
       }
 
       var idToken = header.substring(7);
@@ -38,9 +40,9 @@ public class UserController {
 
       var response = UserRegisterResponse.builder().id(user.getId()).build();
 
-      return ResponseEntity.ok(response);
+      return ResponseEntity.ok(ApiResponseWrapper.success(response));
     } catch (FirebaseAuthException e) {
-      return ResponseEntity.status(401).build();
+      return ResponseEntity.status(401).body(ApiResponseWrapper.error("ID Tokenの検証に失敗しました"));
     }
   }
 }

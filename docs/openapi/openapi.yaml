@@ -37,7 +37,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "./components/schemas/UserResponse.yaml"
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    $ref: "./components/schemas/UserResponse.yaml"
         "400":
           $ref: "./components/responses/BadRequestResponse.yaml"
         "401":
