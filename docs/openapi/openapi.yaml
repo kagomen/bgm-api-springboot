@@ -39,7 +39,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     $ref: "./components/schemas/UserResponse.yaml"
@@ -76,7 +76,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     type: array
@@ -103,7 +103,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     type: array
@@ -136,7 +136,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     $ref: "./components/schemas/BgmResponse.yaml"
@@ -210,7 +210,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     type: array
@@ -311,7 +311,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     type: array
@@ -420,7 +420,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  isSuccess:
+                  success:
                     type: boolean
                   data:
                     type: array

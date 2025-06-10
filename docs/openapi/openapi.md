@@ -53,17 +53,33 @@ curl -X POST http://localhost:8080/register_user \
 
 > Example responses
 
+> 200 Response
+
+```json
+{
+  "success": true,
+  "data": null
+}
+```
+
 <h3 id="ユーザー登録と内部idの発行(初回ログイン時のみ)-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|ユーザーを確認しました|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|ユーザーを確認しました|Inline|
 |400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|none|None|
 |401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|none|None|
 |403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|none|None|
 |404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|none|None|
 
 <h3 id="ユーザー登録と内部idの発行(初回ログイン時のみ)-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|» success|boolean|false|none|none|
+|» data|any|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -97,7 +113,7 @@ curl -X GET http://localhost:8080/get_bgm_list \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": []
 }
 ```
@@ -115,7 +131,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|array|false|none|none|
 |»» *anonymous*|any|false|none|none|
 
@@ -148,7 +164,7 @@ curl -X GET http://localhost:8080/get_bgm_list/{userId} \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": []
 }
 ```
@@ -169,7 +185,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|array|false|none|none|
 |»» *anonymous*|any|false|none|none|
 
@@ -202,7 +218,7 @@ curl -X GET http://localhost:8080/get_bgm/{bgmId} \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": null
 }
 ```
@@ -221,7 +237,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|any|false|none|none|
 
 <aside class="success">
@@ -319,7 +335,7 @@ curl -X GET http://localhost:8080/get_tag_list \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": []
 }
 ```
@@ -337,7 +353,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|array|false|none|none|
 |»» *anonymous*|any|false|none|none|
 
@@ -451,7 +467,7 @@ curl -X GET http://localhost:8080/get_bookmark_list \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": []
 }
 ```
@@ -472,7 +488,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|array|false|none|none|
 |»» *anonymous*|any|false|none|none|
 
@@ -606,7 +622,7 @@ curl -X GET http://localhost:8080/get_report_list \
 
 ```json
 {
-  "isSuccess": true,
+  "success": true,
   "data": []
 }
 ```
@@ -626,7 +642,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|» isSuccess|boolean|false|none|none|
+|» success|boolean|false|none|none|
 |» data|array|false|none|none|
 |»» *anonymous*|any|false|none|none|
 
