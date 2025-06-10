@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`") // userはDBで予約語のため、バッククォートで囲まないとエラーが発生する
 @Getter
 @Setter
 @NoArgsConstructor
