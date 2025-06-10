@@ -1,0 +1,17 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 4
+  bgmId:
+    type: integer
+    example: 123
+  userId:
+    type: string
+    example: 8
+  reason:
+    type: string
+    example: イタズラ投稿だと判断したため
+  createdAt:
+    type: string
+    format: date-time

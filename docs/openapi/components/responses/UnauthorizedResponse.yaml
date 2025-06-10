@@ -1,0 +1,12 @@
+description: 認証が必要です
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 認証が必要です

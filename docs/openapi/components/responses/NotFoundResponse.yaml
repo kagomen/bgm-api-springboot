@@ -1,0 +1,12 @@
+description: 該当リソースが存在しません
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 該当リソースが存在しません

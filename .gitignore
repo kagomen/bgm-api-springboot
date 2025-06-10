@@ -1,1 +1,4 @@
-/.vscode/
+.vscode/
+.gradle/
+build/
+src/main/resources/firebase/*.json

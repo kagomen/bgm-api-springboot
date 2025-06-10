@@ -1,0 +1,11 @@
+type: object
+required:
+  - bgmId
+  - reason
+properties:
+  bgmId:
+    type: integer
+    example: 123
+  reason:
+    type: string
+    example: イタズラ投稿だと判断したため
