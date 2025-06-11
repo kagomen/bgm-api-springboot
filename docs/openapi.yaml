@@ -43,6 +43,7 @@ paths:
   /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
+      description: 並び順は投稿日の新しい順。
       tags: [bgm]
       parameters:
         - name: tags
@@ -56,6 +57,20 @@ paths:
             example: ["rain", "cafe"]
           style: form
           explode: false # tags=rain,cafe とするのに必要な設定
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: BGM一覧を取得しました
@@ -67,15 +82,31 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/BgmResponse"
+                    type: object
+                    properties:
+                      bgmList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
   /get_bgm_list/{userId}:
     get:
       summary: 指定したユーザーが投稿したBGM一覧を取得
+      description: 並び順は投稿日の新しい順。
       tags: [bgm]
       parameters:
         - name: userId
@@ -83,6 +114,20 @@ paths:
           required: true
           schema:
             type: integer
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: BGM一覧を取得しました
@@ -94,9 +139,24 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/BgmResponse"
+                    type: object
+                    properties:
+                      bgmList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -162,6 +222,8 @@ paths:
   /delete_bgm/{bgmId}:
     patch:
       summary: 指定したBGMを論理削除【投稿ユーザと管理者のみ】★
+      description: |
+        BGMテーブルのisDeletedフラグをtrueにし、BGMのidと紐づくBgmTagテーブルを削除する（タグは全BGMで共通して使用するので、Tagテーブルはそのまま）。
       tags: [bgm]
       security:
         - firebase: []
@@ -273,24 +335,14 @@ paths:
 
   /get_bookmark_list:
     get:
-      summary: ブックマーク一覧を取得(タグ検索)
+      summary: ブックマーク一覧を取得
+      description: |
+        並び順はブックマーク登録日の新しい順。一度に取得する件数は30件。
       tags: [bookmark]
       security:
         - firebase: []
       x-roles:
         - USER
-      parameters:
-        - name: tags
-          in: query
-          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-            example: ["rain", "cafe"]
-          style: form
-          explode: false
       responses:
         "200":
           description: ブックマーク一覧を取得しました
