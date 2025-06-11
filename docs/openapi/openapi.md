@@ -19,7 +19,7 @@ headingLevel: 2
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 - ★のついたエンドポイントは実装の優先度低
-- 🔓のついたエンドポイントはログインユーザーのみ使用可
+- 鍵アイコンのついたエンドポイントはログインユーザーのみ使用可
   - その他のロール権限があるエンドポイントは【】内にその旨を記述
 
 Base URLs:
