@@ -297,17 +297,6 @@ paths:
                       totalPages:
                         type: integer
                         example: 5
-          # content:
-          #   application/json:
-          #     schema:
-          #       type: object
-          #       properties:
-          #         isSuccess:
-          #           type: boolean
-          #         data:
-          #           type: array
-          #           items:
-          #             $ref: "#/components/schemas/TagResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
