@@ -46,7 +46,7 @@ paths:
       description: 並び順は投稿日の新しい順。
       tags: [bgm]
       parameters:
-        - name: tags
+        - name: tagList
           in: query
           description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
           required: false
@@ -56,7 +56,7 @@ paths:
               type: string
             example: ["rain", "cafe"]
           style: form
-          explode: false # tags=rain,cafe とするのに必要な設定
+          explode: false # tagList=rain,cafe とするのに必要な設定
         - name: page
           in: query
           description: ページ番号(1始まり)
@@ -251,7 +251,23 @@ paths:
   /get_tag_list:
     get:
       summary: 利用可能なタグ一覧を取得
+      description: 並び順はタグ登録日の新しい順。一度に取得する件数は30件。
       tags: [tag]
+      parameters:
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: タグ一覧を取得しました
@@ -263,9 +279,35 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TagResponse"
+                    type: object
+                    properties:
+                      tagList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TagResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: object
+          #       properties:
+          #         isSuccess:
+          #           type: boolean
+          #         data:
+          #           type: array
+          #           items:
+          #             $ref: "#/components/schemas/TagResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
@@ -615,7 +657,7 @@ components:
           type: string
           format: uri
           example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
+        tagList:
           type: array
           items:
             type: string
@@ -667,7 +709,7 @@ components:
           type: string
           format: uri
           example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
+        tagList:
           type: array
           items:
             $ref: "#/components/schemas/TagResponse"
@@ -702,13 +744,10 @@ components:
       properties:
         id:
           type: integer
+          example: 1
         title:
           type: string
-      example:
-        - id: 1
-          title: "rain"
-        - id: 2
-          title: "cafe"
+          example: "rain"
 
     UserResponse:
       type: object
