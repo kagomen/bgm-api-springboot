@@ -56,6 +56,7 @@ paths:
           required: false
           schema:
             type: array
+            # TODO: タグ名ではなくタグIDで検索するよう修正 
             items:
               type: string
             example: ["rain", "cafe"]
