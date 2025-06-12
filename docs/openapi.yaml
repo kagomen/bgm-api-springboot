@@ -11,7 +11,6 @@ servers:
   - url: http://localhost:8080
 
 # TODO: GETの絞り込み条件を追記する
-# TODO: /add_tagエンドポイントのクエリをボディに
 paths:
   /register_user:
     post:
@@ -306,7 +305,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /add_tag/{bgmId}:
+  /add_tag:
     post:
       summary: 指定したBGMにタグを追加
       tags: [tag]
@@ -314,12 +313,6 @@ paths:
         - firebase: []
       x-roles:
         - USER
-      parameters:
-        - name: bgmId
-          in: path
-          required: true
-          schema:
-            type: integer
       requestBody:
         required: true
         content:
@@ -683,8 +676,12 @@ components:
     TagAddRequest:
       type: object
       required:
+        - bgmId
         - title
       properties:
+        bgmId:
+          type: integer
+          example: 123
         title:
           type: string
           example: "happy"
