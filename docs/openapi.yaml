@@ -717,7 +717,7 @@ components:
           type: integer
           example: 4
         reporterId:
-          type: string
+          type: integer
           example: 8
         reason:
           type: string
@@ -737,7 +737,6 @@ components:
         handledAt:
           type: string
           format: date-time
-      
 
     TagResponse:
       type: object
