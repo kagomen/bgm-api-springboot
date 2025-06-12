@@ -10,7 +10,6 @@ info:
 servers:
   - url: http://localhost:8080
 
-# TODO: dataの命名を考える
 # TODO: GETの絞り込み条件を追記する
 # TODO: /add_tagエンドポイントのクエリをボディに
 paths:
@@ -190,7 +189,11 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    $ref: "#/components/schemas/BgmResponse"
+                    type: object
+                    properties:
+                      bgm:
+                        type: object
+                        $ref: "#/components/schemas/BgmResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "404":
