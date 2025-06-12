@@ -591,7 +591,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /update_report/{reportId}:
+  /update_report:
     patch:
       summary: 違反報告への対応内容を記録する【管理者のみ】★
       tags: [report]
@@ -599,12 +599,6 @@ paths:
         - firebase: []
       x-roles:
         - ADMIN
-      parameters:
-        - name: reportId
-          in: path
-          required: true
-          schema:
-            type: integer
       requestBody:
         required: true
         content:
@@ -654,8 +648,12 @@ components:
     ReportHandlingRequest:
       type: object
       required:
+        - reportId
         - handlingNote
       properties:
+        reportId:
+          type: integer
+          example: 4
         handlingNote:
           type: string
           example: 投稿が悪質なため、BGMを削除した
