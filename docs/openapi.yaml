@@ -11,7 +11,6 @@ servers:
   - url: http://localhost:8080
 
 # TODO: dataの命名を考える
-# TODO: テーブルという表現は誤りのためレコードに修正
 # TODO: GETの絞り込み条件を追記する
 # TODO: /add_tagエンドポイントのクエリをボディに
 paths:
@@ -21,7 +20,7 @@ paths:
       tags: [auth]
       description: |
         - ユーザーがFirebaseでログインした後、初回だけ呼び出される
-        - ID Tokenを検証し、該当するユーザーが存在しなければUserテーブルを作成しIDを返却、存在すればIDだけ返却
+        - ID Tokenを検証し、該当するユーザーが存在しなければUserテーブルにレコードを作成しIDを返却、存在すればIDだけ返却
           - 別端末の同Googleアカウントからのログインなどの可能性
         - 投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
       security:
@@ -227,7 +226,7 @@ paths:
     patch:
       summary: 指定したBGMを論理削除【投稿ユーザと管理者のみ】★
       description: |
-        BGMテーブルのisDeletedフラグをtrueにし、BGMのidと紐づくBgmTagテーブルを削除する（タグは全BGMで共通して使用するので、Tagテーブルはそのまま）。
+        BGMテーブルの該当レコードのisDeletedフラグをtrueにし、BGMのidと紐づくBgmTagテーブルのレコードを削除する（タグは全BGMで共通して使用するので、Tagテーブルのレコードはそのまま）。
       tags: [bgm]
       security:
         - firebase: []
