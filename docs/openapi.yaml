@@ -716,10 +716,7 @@ components:
         id:
           type: integer
           example: 4
-        bgmId:
-          type: integer
-          example: 123
-        userId:
+        reporterId:
           type: string
           example: 8
         reason:
@@ -728,6 +725,19 @@ components:
         createdAt:
           type: string
           format: date-time
+        bgmId:
+          type: integer
+          example: 123
+        bgmAuthorId:
+          type: integer
+          example: 22
+        handlingNote:
+          type: string
+          example: BGMを削除して対応。また、ユーザーの他の投稿は問題ないため、今回BANはせず。
+        handledAt:
+          type: string
+          format: date-time
+      
 
     TagResponse:
       type: object
