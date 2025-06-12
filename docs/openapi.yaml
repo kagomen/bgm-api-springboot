@@ -10,6 +10,10 @@ info:
 servers:
   - url: http://localhost:8080
 
+# TODO: dataの命名を考える
+# TODO: テーブルという表現は誤りのためレコードに修正
+# TODO: GETの絞り込み条件を追記する
+# TODO: /add_tagエンドポイントのクエリをボディに
 paths:
   /register_user:
     post:
