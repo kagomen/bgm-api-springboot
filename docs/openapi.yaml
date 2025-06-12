@@ -4,19 +4,53 @@ info:
   version: 1.0.0
   description: |
     - ★のついたエンドポイントは実装の優先度低
-    - 🔓のついたエンドポイントはログインユーザーのみ使用可
+    - 鍵アイコンのついたエンドポイントはログインユーザーのみ使用可
       - その他のロール権限があるエンドポイントは【】内にその旨を記述
 
 servers:
   - url: http://localhost:8080
 
+# TODO: dataの命名を考える
+# TODO: テーブルという表現は誤りのためレコードに修正
+# TODO: GETの絞り込み条件を追記する
+# TODO: /add_tagエンドポイントのクエリをボディに
 paths:
-  /getBgmList:
+  /register_user:
+    post:
+      summary: ユーザー登録と内部IDの発行(初回ログイン時のみ)
+      tags: [auth]
+      description: |
+        - ユーザーがFirebaseでログインした後、初回だけ呼び出される
+        - ID Tokenを検証し、該当するユーザーが存在しなければUserテーブルを作成しIDを返却、存在すればIDだけ返却
+          - 別端末の同Googleアカウントからのログインなどの可能性
+        - 投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+      security:
+        - firebase: []
+      x-roles:
+        - USER
+      responses:
+        "200":
+          description: ユーザーを確認しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /get_bgm_list:
     get:
       summary: BGM一覧を取得(タグ検索)
+      description: 並び順は投稿日の新しい順。
       tags: [bgm]
       parameters:
-        - name: tags
+        - name: tagList
           in: query
           description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
           required: false
@@ -26,7 +60,21 @@ paths:
               type: string
             example: ["rain", "cafe"]
           style: form
-          explode: false # tags=rain,cafe とするのに必要な設定
+          explode: false # tagList=rain,cafe とするのに必要な設定
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: BGM一覧を取得しました
@@ -38,13 +86,91 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/BgmResponse"
+                    type: object
+                    properties:
+                      bgmList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /getBgm/{bgmId}:
+  /get_bgm_list/{userId}:
+    get:
+      summary: 指定したユーザーが投稿したBGM一覧を取得
+      description: 並び順は投稿日の新しい順。
+      tags: [bgm]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      bgmList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /get_bgm/{bgmId}:
     get:
       summary: 指定したBGMの情報を取得
       tags: [bgm]
@@ -71,12 +197,12 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /postBgm:
+  /post_bgm:
     post:
       summary: BGMを投稿
       tags: [bgm]
       description: |
-        投稿者データ(createdBy)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
+        投稿者データ(userId)はJWTトークンからサーバ側で判別するため、リクエストボディには含めない
       security:
         - firebase: []
       x-roles:
@@ -97,9 +223,11 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenResponse"
 
-  /deleteBgm/{bgmId}:
+  /delete_bgm/{bgmId}:
     patch:
       summary: 指定したBGMを論理削除【投稿ユーザと管理者のみ】★
+      description: |
+        BGMテーブルのisDeletedフラグをtrueにし、BGMのidと紐づくBgmTagテーブルを削除する（タグは全BGMで共通して使用するので、Tagテーブルはそのまま）。
       tags: [bgm]
       security:
         - firebase: []
@@ -124,10 +252,26 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getTagList:
+  /get_tag_list:
     get:
       summary: 利用可能なタグ一覧を取得
+      description: 並び順はタグ登録日の新しい順。一度に取得する件数は30件。
       tags: [tag]
+      parameters:
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: タグ一覧を取得しました
@@ -139,13 +283,28 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TagResponse"
+                    type: object
+                    properties:
+                      tagList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TagResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /addTag/{bgmId}:
+  /add_tag/{bgmId}:
     post:
       summary: 指定したBGMにタグを追加
       tags: [tag]
@@ -177,9 +336,10 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /removeTag/{bgmId}:
+  /remove_tag/{bgmId}/{tagId}:
     delete:
       summary: 指定したBGMから指定したタグを物理削除
+      description: タグは複数個同時に削除できない
       tags: [tag]
       security:
         - firebase: []
@@ -191,12 +351,11 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TagRemoveRequest"
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "204":
           description: タグを削除しました
@@ -209,26 +368,31 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getBookmarkList:
+  /get_bookmark_list:
     get:
-      summary: ブックマーク一覧を取得(タグ検索)
+      summary: ブックマーク一覧を取得
+      description: |
+        並び順はブックマーク登録日の新しい順。一度に取得する件数は30件。
       tags: [bookmark]
       security:
         - firebase: []
       x-roles:
         - USER
       parameters:
-        - name: tags
+        - name: page
           in: query
-          description: タグ検索用クエリ(小文字の英字のみ、複数の場合はカンマで区切る)
+          description: ページ番号(1始まり)
           required: false
           schema:
-            type: array
-            items:
-              type: string
-            example: ["rain", "cafe"]
-          style: form
-          explode: false
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
       responses:
         "200":
           description: ブックマーク一覧を取得しました
@@ -240,9 +404,24 @@ paths:
                   isSuccess:
                     type: boolean
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/BgmResponse"
+                    type: object
+                    properties:
+                      bookmarkList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -252,7 +431,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /addBookmark/{bgmId}:
+  /add_bookmark/{bgmId}:
     post:
       summary: ブックマークに登録
       tags: [bookmark]
@@ -278,7 +457,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /deleteBookmark/{bgmId}:
+  /delete_bookmark/{bgmId}:
     delete:
       summary: ブックマークの物理削除
       tags: [bookmark]
@@ -304,36 +483,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /getReportList:
-    get:
-      summary: 違反報告一覧を取得【管理者のみ】★
-      tags: [report]
-      security:
-        - firebase: []
-      x-roles:
-        - ADMIN
-      responses:
-        "200":
-          description: 報告一覧を取得しました
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  isSuccess:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ReportResponse"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-
-  /postReport:
+  /post_report:
     post:
       summary: 違反BGMを通報★
       tags: [report]
@@ -359,10 +509,134 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
+  /get_report_list:
+    get:
+      summary: 違反報告一覧を取得【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: 報告一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      reportList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/ReportResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+
+  /ban_user/{userId}:
+    patch:
+      summary: ユーザーの論理削除【管理者のみ】★
+      tags: [report]
+      description: |
+        アカウントBAN用
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ユーザーをBANしました
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /update_report/{reportId}:
+    patch:
+      summary: 違反報告への対応内容を記録する【管理者のみ】★
+      tags: [report]
+      security:
+        - firebase: []
+      x-roles:
+        - ADMIN
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportHandlingRequest"
+      responses:
+        "201":
+          description: 対応内容を記録しました
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
 components:
+  securitySchemes:
+    firebase:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     # ==================== リクエストボディ用のデータスキーマ ====================
-
     BgmRequest:
       type: object
       required:
@@ -376,29 +650,20 @@ components:
           type: string
           format: uri
           example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
+        tagList:
           type: array
           items:
             type: string
           example: ["rain", "cafe"]
 
-    TagAddRequest:
+    ReportHandlingRequest:
       type: object
       required:
-        - title
+        - handlingNote
       properties:
-        title:
+        handlingNote:
           type: string
-          example: "happy"
-
-    TagRemoveRequest:
-      type: object
-      required:
-        - tagId
-      properties:
-        tagId:
-          type: integer
-          example: 123
+          example: 投稿が悪質なため、BGMを削除した
 
     ReportRequest:
       type: object
@@ -412,6 +677,15 @@ components:
         reason:
           type: string
           example: イタズラ投稿だと判断したため
+
+    TagAddRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "happy"
 
     # ==================== レスポンスボディ用のデータスキーマ ====================
 
@@ -428,29 +702,16 @@ components:
           type: string
           format: uri
           example: https://www.youtube.com/watch?v=pPN_t-oEjvI
-        tags:
+        tagList:
           type: array
           items:
             $ref: "#/components/schemas/TagResponse"
-        createdBy:
+        userId:
           type: integer
           example: 8
         createdAt:
           type: string
           format: date-time
-
-    TagResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-      example:
-        - id: 1
-          title: "rain"
-        - id: 2
-          title: "cafe"
 
     ReportResponse:
       type: object
@@ -461,8 +722,8 @@ components:
         bgmId:
           type: integer
           example: 123
-        createdBy:
-          type: integer
+        userId:
+          type: string
           example: 8
         reason:
           type: string
@@ -471,9 +732,25 @@ components:
           type: string
           format: date-time
 
-  responses:
-    # ==================== エラーレスポンス ====================
+    TagResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "rain"
 
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 8
+
+  # ==================== エラーレスポンス ====================
+  responses:
     BadRequestResponse:
       description: 不正なリクエストです
       content:
@@ -529,11 +806,3 @@ components:
               message:
                 type: string
                 example: 該当リソースが存在しません
-
-    # ==================== 認証設定 ====================
-
-  securitySchemes:
-    firebase:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

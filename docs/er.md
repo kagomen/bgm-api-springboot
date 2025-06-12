@@ -8,7 +8,8 @@ erDiagram
 User {
 Integer id PK "ユーザーID"
 String uid UK "Firebase uid"
-String name "ユーザー名"
+String email "Firebase Authから取得したEmail"
+Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
 }
 
@@ -16,9 +17,9 @@ Bgm {
 Integer id PK "BGM ID"
 String title "BGMタイトル"
 String url "BGM URL"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
-LocalDateTime deleted_at "削除日時"
+Boolean is_deleted "削除フラグ"
 }
 
 Bookmark {
@@ -30,7 +31,7 @@ LocalDateTime created_at "登録日時"
 Tag {
 Integer id PK "タグID"
 String title UK "タグ名"
-Integer created_by FK "ユーザーID"
+Integer user_id FK "ユーザーID"
 LocalDateTime created_at "投稿日時"
 }
 
@@ -42,29 +43,21 @@ LocalDateTime created_at "登録日時"
 
 Report {
 Integer id PK "レポートID"
-Integer bgm_id FK "BGM ID"
+Integer reporter_user_id FK "通報したユーザーのID"
 String reason "通報理由"
-Integer created_by FK "ユーザーID"
+Integer bgm_id FK "通報されたBGMのID"
+Integer bgm_author_user_id FK "通報されたBGM作成者のID"
 LocalDateTime created_at "通報日時"
+String handling_note "管理者の対応内容"
+LocalDateTime handled_at "管理者の対応日時"
 }
 
-User ||--o{ Bgm : created_by
+User ||--o{ Bgm : user_id
 User ||--o{ Bookmark : user_id
-User ||--o{ Tag : created_by
-User ||--o{ Report : created_by
+User ||--o{ Tag : user_id
+User ||--o{ Report : "reporter_user_id<br />bgm_author_user_id"
 Bgm ||--o{ Bookmark : bgm_id
 Bgm ||--o{ BgmTag : bgm_id
 Bgm ||--o{ Report : bgm_id
 Tag ||--o{ BgmTag : tag_id
 ```
-
-## 補足
-
-- BGM の削除について
-  - BGM データは物理削除せず論理削除する
-    - Report テーブルで BGM の id が紐づいている&記録として残しておくため
-  - `Bgm` テーブルの `url` と `deleted_at` に対して複合ユニーク制約を持たせる
-    - 一度論理削除した URL を別ユーザーが再投稿できるようにするため(`url` だけユニーク制約を持たせると、再投稿できなくなる)
-- タグの削除について
-  - 検索しやすいように、タグは他の曲とも共有させる
-  - よって、タグの削除は BGM との紐付けを解除するだけで、タグ自体は削除しない
