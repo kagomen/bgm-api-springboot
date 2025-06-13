@@ -43,7 +43,7 @@ paths:
 
   /get_bgm_list:
     get:
-      summary: BGM一覧を取得(タグ検索)
+      summary: BGM一覧を取得(クエリでタグ検索も可)
       description: 並び順は投稿日の新しい順。
       tags: [bgm]
       parameters:
@@ -104,7 +104,70 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequestResponse"
 
-  /get_bgm_list/{userId}:
+  /get_bgm_list/tag_id/{tagId}:
+    get:
+      summary: 指定したタグIDと紐づくBGM一覧を取得
+      description: 並び順は投稿日の新しい順。
+      tags: [bgm]
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: ページ番号(1始まり)
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: 1ページあたりの取得件数
+          required: false
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: BGM一覧を取得しました
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSuccess:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      bgmList:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BgmResponse"
+                      page:
+                        type: integer
+                        example: 1
+                      size:
+                        type: integer
+                        example: 30
+                      totalItems:
+                        type: integer
+                        example: 150
+                      totalPages:
+                        type: integer
+                        example: 5
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /get_bgm_list/user_id/{userId}:
     get:
       summary: 指定したユーザーが投稿したBGM一覧を取得
       description: 並び順は投稿日の新しい順。
