@@ -13,13 +13,13 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/public/**").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .addFilterBefore(new FirebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-            .build();
+    return http.csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth.requestMatchers(
+            "/public/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
+        ).permitAll().anyRequest().authenticated())
+        .addFilterBefore(new FirebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+        .build();
   }
 }
