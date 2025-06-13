@@ -49,11 +49,20 @@
       - ページングは 1 から開始
     - フロー:
       - 例: フロント側で"cafe rain"を入力・検索
-      - Tag.title に対し、cafe と rain でそれぞれ LIKE 検索
+      - Tag.title に対し、cafe と rain でそれぞれ曖昧検索
       - cafe 系の Tag.id 群と rain 系の Tag.id 群を取得
       - 各 id 群で、BgmTag.tagId を検索
       - cafe 系の BgmTag.bgmId 群と rain 系の BgmTag.bgmId 群を取得
       - どちらの id 群にも属している id を抜き出してデータリストを作成し、レスポンス返却
+    - 例：`"cafe rain"`という入力があったとき
+      | BGM に付与されたタグ | 検索結果に含まれるか |
+      |---------------------|-------|
+      | `cafe`, `rain` | 含まれる|
+      | `cafe`, `rainy_forest` | 含まれる |
+      | `work_cafe`, `rainy_forest` |含まれる |
+      | `cafe` | 含まれない |
+      | `rain` | 含まれない |
+      | `work`, `forest` | 含まれない |
   - BGM をタグ ID で検索 ☆
     - 条件:
       - タグ ID が一致(対象: `BgmTag`テーブル)
