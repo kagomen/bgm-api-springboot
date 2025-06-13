@@ -10,7 +10,6 @@ info:
 servers:
   - url: http://localhost:8080
 
-# TODO: GETの絞り込み条件を追記する
 paths:
   /register_user:
     post:
