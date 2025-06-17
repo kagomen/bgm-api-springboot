@@ -9,6 +9,7 @@ User {
 Integer id PK "ユーザーID"
 String uid UK "Firebase uid"
 String email "Firebase Authから取得したEmail"
+String name "ユーザー名"
 Boolean is_banned "BAN状態"
 LocalDateTime created_at "登録日時"
 }
