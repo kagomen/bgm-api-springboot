@@ -28,8 +28,10 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
   private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthFilter.class);
 
   @Override
-  protected void doFilterInternal(
-      @NonNull HttpServletRequest request, @NonNull  HttpServletResponse response, @NonNull FilterChain filterChain)
+  public void doFilterInternal(
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain)
       throws ServletException, IOException {
 
     // クライアントから送られてきたAuthorizationヘッダーを取得
