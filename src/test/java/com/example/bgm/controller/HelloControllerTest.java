@@ -25,8 +25,8 @@ public class HelloControllerTest {
   }
 
   @Test
-  void private_helloを未認証で実行すると403が返る() throws Exception {
-    mockMvc.perform(get("/private/hello")).andExpect(status().isForbidden());
+  void private_helloを未認証で実行すると401が返る() throws Exception {
+    mockMvc.perform(get("/private/hello")).andExpect(status().isUnauthorized());
   }
 
   @Test
