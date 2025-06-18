@@ -45,9 +45,10 @@ paths:
         "404":
           $ref: "#/components/responses/NotFoundResponse"
 
-  /update_user_name:
+  # TODO: ユーザー情報の項目を増やす
+  /update_user:
     patch:
-      summary: ユーザー名の編集
+      summary: ユーザー情報の編集
       tags: [ user ]
       security:
         - firebase: [ ]
@@ -61,7 +62,7 @@ paths:
               $ref: "#/components/schemas/UserRequest"
       responses:
         "200":
-          description: ユーザー名を編集しました
+          description: ユーザー情報を編集しました
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
