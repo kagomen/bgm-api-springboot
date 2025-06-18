@@ -1,14 +1,13 @@
 package com.example.bgm.config;
 
+import com.example.bgm.security.CustomAuthenticationEntryPoint;
 import com.example.bgm.security.FirebaseAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -16,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   private final FirebaseAuthFilter firebaseAuthFilter;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,9 +40,8 @@ public class SecurityConfig {
         // FirebaseAuthFilterをUsernamePasswordAuthenticationFilterの前に挿入
         .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
-        // 未認証のユーザーが保護されたエンドポイントにアクセスした場合、401を返す
-        .exceptionHandling(
-            ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint((HttpStatus.UNAUTHORIZED))));
+        // 未認証のユーザーが保護されたエンドポイントにアクセスした時の例外処理
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint));
 
     return http.build();
   }
