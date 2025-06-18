@@ -1,0 +1,7 @@
+spring:
+  application:
+    name:
+      bgm-api-springboot
+
+firebase:
+  service-account-file: classpath:firebase/serviceAccountKey.json

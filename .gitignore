@@ -3,3 +3,5 @@
 .gradle/
 build/
 src/main/resources/firebase/*.json
+memo.md
+firebase-login.html
