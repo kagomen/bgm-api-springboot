@@ -32,7 +32,7 @@ public class UserController {
 
     var data = UserResponseDto.builder().id(user.getId()).build();
 
-    var response = new ApiResponseDto<>(true, data);
+    var response = ApiResponseDto.success(data);
 
     return ResponseEntity.ok(response);
   }
