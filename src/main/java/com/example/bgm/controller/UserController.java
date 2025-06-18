@@ -5,6 +5,7 @@ import com.example.bgm.dto.UserRequestDto;
 import com.example.bgm.dto.UserResponseDto;
 import com.example.bgm.service.UserService;
 import com.google.firebase.auth.FirebaseToken;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class UserController {
 
   @PostMapping("/register_user")
   public ResponseEntity<ApiResponseDto<UserResponseDto>> registerUser(
-      Authentication authentication, @RequestBody UserRequestDto requestBody) {
+      Authentication authentication, @Valid @RequestBody UserRequestDto requestBody) {
 
     var decodedToken = (FirebaseToken) authentication.getPrincipal();
 
