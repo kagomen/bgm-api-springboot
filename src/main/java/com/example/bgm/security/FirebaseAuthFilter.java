@@ -57,9 +57,12 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       // 今回はFirebaseで認証するのでパスワードは必要ない
       var authentication =
           new UsernamePasswordAuthenticationToken(
-              decodedToken.getUid(), // uid
-              null, // パスワード
-              Collections.emptyList() // 権限
+              // UserControllerにDecoded ID Tokenをそのまま渡す
+              decodedToken,
+              // パスワード
+              null,
+              // 権限
+              Collections.emptyList()
               // TODO: ロールを作成
               );
 
