@@ -1,6 +1,7 @@
 package com.example.bgm.config;
 
 import com.example.bgm.security.FirebaseAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,10 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+  private final FirebaseAuthFilter firebaseAuthFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,13 +31,14 @@ public class SecurityConfig {
         // URLごとのアクセス制御
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/public/**", "/swagger-ui/**", "/v3/api-docs/**")
+                auth.requestMatchers(
+                        "/public/**", "/swagger-ui/**", "/v3/api-docs/**", "/register_user")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
 
         // FirebaseAuthFilterをUsernamePasswordAuthenticationFilterの前に挿入
-        .addFilterBefore(new FirebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
         // 未認証のユーザーが保護されたエンドポイントにアクセスした場合、401を返す
         .exceptionHandling(

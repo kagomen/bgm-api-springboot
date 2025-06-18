@@ -8,11 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
  * Firebase Authentication用カスタムフィルター
@@ -23,7 +26,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * <p>OncePerRequestFilter: 1リクエストに1回だけ実行
  */
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class FirebaseAuthFilter extends OncePerRequestFilter {
+
+  private final HandlerExceptionResolver handlerExceptionResolver;
 
   @Override
   public void doFilterInternal(
@@ -68,13 +75,8 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       // この後のリクエスト処理で「認証済みユーザー」として扱えるようにする
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } catch (FirebaseAuthException e) {
-      log.warn("Firebase認証に失敗しました", e);
-      // トークン検証に失敗した場合（期限切れ、不正など）、認証エラーを返却
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    } catch (Exception e) {
-      log.error("Firebase認証中に予期せぬエラーが発生しました", e);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      // 例外処理をGlobalExceptionHandlerに任せる
+      handlerExceptionResolver.resolveException(request, response, null, e);
       return;
     }
     // 認証済み状態でフィルター処理を続ける
