@@ -2,15 +2,13 @@ package com.example.bgm.security;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +22,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * <p>OncePerRequestFilter: 1リクエストに1回だけ実行
  */
+@Slf4j
 public class FirebaseAuthFilter extends OncePerRequestFilter {
-  private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthFilter.class);
 
   @Override
   public void doFilterInternal(
@@ -35,7 +33,7 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     // クライアントから送られてきたAuthorizationヘッダーを取得
-    String header = request.getHeader("Authorization");
+    var header = request.getHeader("Authorization");
 
     // ヘッダーがない、もしくは"Bearer "で始まっていない場合は、
     // Firebaseによる認証はスキップして次の処理に進む
@@ -46,12 +44,12 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     }
 
     // "Bearer "を除去してFirebase IDトークンを取り出す
-    String idToken = header.substring(7);
+    var idToken = header.substring(7);
 
     try {
       // IDトークンを検証
       // 成功すればuidなどを含むFirebaseトークンが返却される
-      FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+      var decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 
       // Spring Security用の認証情報オブジェクトを作成
       // 今回はFirebaseで認証するのでパスワードは必要ない
@@ -70,12 +68,12 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
       // この後のリクエスト処理で「認証済みユーザー」として扱えるようにする
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } catch (FirebaseAuthException e) {
-      logger.warn("Firebase認証に失敗しました", e);
+      log.warn("Firebase認証に失敗しました", e);
       // トークン検証に失敗した場合（期限切れ、不正など）、認証エラーを返却
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     } catch (Exception e) {
-      logger.error("Firebase認証中に予期せぬエラーが発生しました", e);
+      log.error("Firebase認証中に予期せぬエラーが発生しました", e);
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
