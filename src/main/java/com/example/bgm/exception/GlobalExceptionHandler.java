@@ -3,6 +3,7 @@ package com.example.bgm.exception;
 import com.example.bgm.dto.ApiResponseDto;
 import com.example.bgm.dto.ErrorResponseDto;
 import com.google.firebase.auth.FirebaseAuthException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +65,22 @@ public class GlobalExceptionHandler {
     var responseBody = ApiResponseDto.<Void>error(errorResponse);
 
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+  }
+
+  /**
+   * 指定されたエンティティが見つからないエラーを処理
+   *
+   * @return 404 Not Found
+   */
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<ApiResponseDto<Void>> handleEntityNotFoundException(
+      EntityNotFoundException ex) {
+    log.warn("リソースが見つかりませんでした: {}", ex.getMessage());
+
+    var errorResponse = new ErrorResponseDto("要求されたリソースが見つかりませんでした", Collections.emptyMap());
+    var responseBody = ApiResponseDto.<Void>error(errorResponse);
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
   }
 
   /**
